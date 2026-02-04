@@ -1,0 +1,180 @@
+
+
+/* ===== FORCE header compact (Quarto dashboard) ===== */
+.quarto-dashboard .dashboard-header {
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+  min-height: unset !important;
+}
+
+/* Titre H1 */
+.quarto-dashboard .dashboard-header h1 {
+  font-size: 1.4rem !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Logo */
+.quarto-dashboard .dashboard-header img {
+  height: 34px !important;
+  width: auto;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Couleur */
+/* Forcer la couleur du header */
+.quarto-dashboard .dashboard-header,
+.quarto-dashboard .navbar,
+.quarto-dashboard .navbar.navbar-default {
+  background-color: #3D619DFF !important;
+  border-bottom: none !important; /* si une bordure apparaît */
+}
+
+/* Texte et logo */
+.quarto-dashboard .dashboard-header h1,
+.quarto-dashboard .dashboard-header .author,
+.quarto-dashboard .navbar .navbar-brand {
+  color: white !important;
+}
+
+/* Texte des antennes */
+#liste-antennes a {
+  color: #3D619DFF;
+  text-decoration: none;   /* supprime le soulignement */
+  transition: all 0.2s ease;  /* animation douce */
+}
+
+/* Au survol */
+#liste-antennes a:hover {
+  font-size: 1.1em;       /* grossit le texte */
+  font-weight: 600;        /* plus gras */
+  color: #2A4C70FF;       /* change de couleur */
+  cursor: pointer;         /* curseur main */
+}
+
+
+/* ===== Value boxes ===== */
+
+.valuebox {
+  border-radius: 12px;
+}
+
+.tabset > .tab-content {
+  border-radius: 0 14px 14px 14px;
+}
+
+.valuebox {
+  background-color: var(--color-accent);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 2px 4px 10px rgba(0,0,0,0.2);
+  padding: 1em 1.2em;
+  margin-bottom: 1em;
+  transition: all 0.2s ease;
+}
+
+.valuebox:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 12px rgba(0,0,0,0.25);
+}
+
+/* ===== Fenêtres (cards / panels) ===== */
+.card, .box {
+  border-radius: 12px;
+  box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+/* ===== TABSETS (GLOBAL + ROW) ===== */
+
+/* Conteneur */
+.tabset {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* Barre d’onglets */
+.tabset .nav-tabs,
+.tabset-row .nav-tabs,
+.row .nav-tabs {
+  border-bottom: none !important;
+  background: transparent !important;
+  margin-bottom: 0 !important;
+}
+
+/* Onglets non actifs */
+.tabset .nav-link:not(.active),
+.tabset-row .nav-link:not(.active),
+.row .nav-link:not(.active) {
+  border: none !important;
+  border-radius: 999px !important;  /* tout arrondi */
+  background-color: #6c757d !important; 
+  color: #f8f9fa !important;
+  margin-right: 6px;
+  padding: 0.55em 1.2em;
+  transition: all 0.2s ease;
+}
+
+/* Hover sur onglets non actifs */
+.tabset .nav-link:not(.active):hover,
+.tabset-row .nav-link:not(.active):hover,
+.row .nav-link:not(.active):hover {
+  background-color: #5a6268 !important; /* couleur hover */
+  color: white !important;
+  transform: scale(1.05);  /* léger agrandissement */
+  cursor: pointer;
+}
+
+/* Onglet actif */
+.tabset .nav-link.active,
+.tabset-row .nav-link.active,
+.row .nav-link.active {
+  background-color: #3D619DFF !important; /* couleur actuelle */
+  color: white !important;
+  font-weight: 600;
+  border-radius: 999px !important;  /* arrondi identique aux inactifs */
+  transition: all 0.2s ease;
+}
+
+/* Contenu */
+.tabset > .tab-content {
+  border-top: none !important;
+  background-color: white !important;
+  border-radius: 0 14px 14px 14px;
+  padding: 1em;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.acteurs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 30px;
+}
+
+/* ===== FORCER le style des tabsets DANS les ROW ===== */
+.tabset-row .nav-tabs .nav-link:not(.active),
+.row .nav-tabs .nav-link:not(.active) {
+  background-color: #6c757d !important;  /* gris foncé */
+  color: #f8f9fa !important;
+  border: none !important;
+  border-radius: 999px !important;
+}
+
+/* Hover */
+.tabset-row .nav-tabs .nav-link:not(.active):hover,
+.row .nav-tabs .nav-link:not(.active):hover {
+  background-color: #5a6268 !important;
+  color: white !important;
+}
+
+/* Onglet actif (row compris) */
+.tabset-row .nav-tabs .nav-link.active,
+.row .nav-tabs .nav-link.active {
+  background-color: var(--dashboard-accent) !important;
+  color: white !important;
+  font-weight: 600;
+}

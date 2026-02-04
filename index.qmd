@@ -1,0 +1,298 @@
+---
+title: "<a href='https://www.profish-technology.be/' target='_blank' style='text-decoration:none;'>
+<img src='images/logo_profish.png' style='height:60px; vertical-align:middle; margin-right:5px;'>
+</a> Le Loing"
+format:
+  dashboard:
+    orientation: rows
+    theme: default
+    mainfont: Montserrat
+    fontsize: 0.95em
+    fontawesome: "6"
+    embed-resources: true
+    smooth-scroll: true
+    css: styles.css
+execute:
+  echo: false
+  warning: false
+  message: false
+  working-dir: ".."
+editor: visual
+---
+
+```{r setup}
+# Charger toutes les librairies nécessaires
+library(tidyverse)
+library(readr)
+library(readxl)
+library(kableExtra)
+library(formattable)
+library(webshot2)
+library(DT)
+library(htmltools)
+library(leaflet)
+library(leaflet.extras)
+library(htmlwidgets)
+```
+
+# Informations générales
+
+## Row
+
+### Column {.tabset width="50%"}
+
+```{r, results='asis'}
+#| title: Acteurs du projet
+cat('
+<strong>Maitre d\'ouvrage</strong><br>
+EPAGE du Loing<br><br>
+<strong>Partenaires</strong><br>
+Fédération de Pêche du Loiret<br>
+Office Français de la Biodiversité (45)<br>
+Agence de l\'eau Seine Normandie<br>
+Mairie de Châtillon-Coligny<br><br>
+
+<div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
+  <img src="images/logo_epage_du_loing.png" height="50">
+  <img src="images/FD45.png" height="50">
+  <img src="images/OFB.jpg" height="50">
+  <img src="images/LOGO_AESN.jpg" height="50">
+   <img src="images/logo_chatillon.png" height="50">
+</div>
+')
+```
+
+```{r, results='asis'}
+#| title: Réseau télémétrie
+
+# Chemin vers le fichier Excel
+fichier_xlsx <- "C:/Users/r0bin/OneDrive - Profish/Projets Profish/Profish FR/EPAGE Le Loing/data/data_raw/suivi_data.xlsx"
+
+# Lecture du fichier
+suivi_data <- read_excel(fichier_xlsx)
+
+# Récupération de la dernière valeur non NA de la colonne id_dl
+date_dernier_dl <- suivi_data %>%
+  filter(!is.na(id_dl)) %>%
+  tail(1) %>%
+  pull(date_dl)
+
+# Affichage HTML
+cat(paste0(
+  "
+<p><strong>Nombre d’antennes : 5</strong></p>
+
+<ul id='liste-antennes'>
+  <li><a href='#' data-antenne='Ronce aval' style='text-decoration:none; color:#3D619DFF;'>Ronce aval</a></li>
+  <li><a href='#' data-antenne='Ronce amont' style='text-decoration:none; color:#3D619DFF;'>Ronce amont</a></li>
+  <li><a href='#' data-antenne='Milleron' style='text-decoration:none; color:#3D619DFF;'>Milleron</a></li>
+  <li><a href='#' data-antenne='Dalot' style='text-decoration:none; color:#3D619DFF;'>Dalot</a></li>
+  <li><a href='#' data-antenne='Lancière' style='text-decoration:none; color:#3D619DFF;'>Lancière</a></li>
+</ul>
+
+  <p><strong>Date du dernier téléchargement</strong></p>
+  <ul>
+    <li>", format(date_dernier_dl, "%d/%m/%Y"), "</li>
+  </ul>
+  "
+))
+```
+
+```{r}
+source("scripts_quarto/6.Evolution détections (quarto).R")
+```
+
+```{r}
+#| title: Téléchargement des données
+tags$div(
+  style = "width: 100%",
+  HTML(as.character(tableau_suivi_aff)))
+
+```
+
+### Column {width="50%"}
+
+```{r}
+sites_antennes <- read_delim("C:/Users/r0bin/OneDrive - Profish/Projets Profish/Profish FR/EPAGE Le Loing/data/quarto/sites_antennes.csv", 
+    delim = ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
+    trim_ws = TRUE)
+
+leaflet(sites_antennes, options = leafletOptions(worldCopyJump = TRUE)) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lng = ~long,
+    lat = ~lat,
+    layerId = ~antenne,
+    radius = 6,
+    color = "#3D619DFF",
+    fillOpacity = 0.7,
+    popup = ~paste0("<b>", antenne, "</b>"),
+    popupOptions = popupOptions(
+      offset = c(0, -10))
+    )  %>%
+  addMiniMap(
+    tiles = providers$OpenStreetMap,
+    toggleDisplay = TRUE,
+    position = "bottomright",
+    zoomLevelFixed = 3,
+    aimingRectOptions = list(color = "#FF4C4C", weight = 8, clickable = FALSE),
+    width = 100,
+    height = 100
+  ) %>%
+  htmlwidgets::onRender("
+    function(el, x) {
+
+      var map = this;
+
+      function resetMarkers(){
+        map.eachLayer(function(layer){
+          if(layer.options && layer.options.layerId){
+            layer.setStyle({color: 'steelblue', radius: 6});
+          }
+        });
+      }
+
+      function highlight(name){
+        resetMarkers();
+        map.eachLayer(function(layer){
+          if(layer.options && layer.options.layerId === name){
+            layer.setStyle({color: 'tomato', radius: 10});
+            layer.bringToFront();
+            layer.openPopup();
+          }
+        });
+      }
+
+      // clic sur la carte
+      map.eachLayer(function(layer){
+        if(layer.options && layer.options.layerId){
+          layer.on('click', function(){
+            highlight(this.options.layerId);
+          });
+        }
+      });
+
+      // clic sur la liste HTML
+      document.querySelectorAll('#liste-antennes a').forEach(function(link){
+        link.addEventListener('click', function(e){
+          e.preventDefault();
+          highlight(this.dataset.antenne);
+        });
+      });
+
+    }
+  ")
+```
+
+## Row
+
+```{r}
+source("scripts_quarto/2.1.Analyses passages (quarto).R")
+```
+
+::: {.valuebox color="success" icon="wifi"}
+Nombre de détections
+
+**`r format(detection_sum, big.mark = " ", scientific = FALSE)`**
+:::
+
+::: {.valuebox color="info" icon="check-circle"}
+Nombre de poissons détectés
+
+**`r format(ind_sum, big.mark = " ", scientific = FALSE)`**
+:::
+
+# Synthèse des franchissements
+
+## Synthèse franchissement {.tabset}
+
+```{r}
+source("scripts_quarto/5.2.Taux de franchissement (quarto).R")
+```
+
+### Taux de franchissement brut
+
+```{r}
+tags$div(
+  style = "width: 60%; margin-left: auto; margin-right: auto;",
+  HTML(as.character(tableau_brut)))
+```
+
+### Taux de franchissement cumulé
+
+```{r}
+tags$div(
+  style = "width: 60%; margin-left: auto; margin-right: auto;",
+  HTML(as.character(tableau_treated)))
+```
+
+# Taux de détection
+
+```{r}
+source("scripts_quarto/2.3.Analyses taux de détection (quarto).R")
+```
+
+## Résumé des taux de détection {.tabset}
+
+### Espèce
+
+```{r}
+tags$div(
+  style = "width: 60%; margin-left: auto; margin-right: auto;",
+  HTML(as.character(table_esp))
+)
+```
+
+### Lot
+
+```{r}
+tags$div(
+  style = "width: 60%; margin-left: auto; margin-right: auto;",
+  HTML(as.character(table_lot))
+)
+```
+
+### Lot et espèce
+
+```{r, results="asis"}
+
+# Créer le datatable
+
+dt <- datatable(
+  table_filtrable,
+  escape = FALSE,
+  filter = 'top',
+  rownames = FALSE,
+  class = 'cell-border stripe hover',
+  options = list(
+    pageLength = 10,
+    dom = 't',
+    columnDefs = list(list(targets = c(0,1), type = 'string')),
+    autoWidth = TRUE
+  )
+) %>%
+  formatStyle(
+    columns = names(table_filtrable),
+    `white-space` = "nowrap"
+  ) 
+# Centrer le tableau sur la page
+tags$div(style = "width: 90%; margin-left: auto; margin-right: auto;", dt)
+```
+
+# Variables environnementales
+
+## Variables {.tabset}
+
+### Débit
+
+```{r}
+source("scripts_quarto/3.2.Détections chronique (quarto).R")
+p_final
+```
+
+### Température
+
+```{r, results='asis'}
+cat("En cours...")
+
+```
