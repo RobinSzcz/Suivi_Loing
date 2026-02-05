@@ -113,7 +113,7 @@ tags$div(
 ### Column {width="50%"}
 
 ```{r}
-sites_antennes <- read_delim("C:/Users/r0bin/OneDrive - Profish/Projets Profish/Profish FR/EPAGE Le Loing/data/quarto/sites_antennes.csv", 
+sites_antennes <- read_delim("sites_antennes.csv", 
     delim = ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
     trim_ws = TRUE)
 
@@ -286,6 +286,7 @@ tags$div(style = "width: 90%; margin-left: auto; margin-right: auto;", dt)
 ### Débit
 
 ```{r}
+source("../débit/Téléchargement automatisé du débit.R")
 source("scripts_quarto/3.2.Détections chronique (quarto).R")
 p_final
 ```

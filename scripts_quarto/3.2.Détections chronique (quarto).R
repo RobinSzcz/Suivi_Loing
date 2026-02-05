@@ -6,15 +6,7 @@ library(plotly)
 
 # Chargement des données
 detections_bio <- readRDS("../data_clean/detections_filter_bio.rds")
-debit_amont <- read_csv("../débit/Débit Loing amont.csv")
-
-# Préparation des données de débit
-debit_amont <- debit_amont %>%
-  mutate(`Date (TU)` = as.Date(`Date (TU)`)) %>%
-  select(`Date (TU)`, `Valeur (en m³/s)`) %>%
-  rename(date = `Date (TU)`, valeur = `Valeur (en m³/s)`) %>%
-  group_by(date) %>%
-  summarise(valeur = mean(valeur, na.rm = TRUE), .groups = "drop")
+# debit_amont <- read_csv("../débit/Débit Loing amont.csv")
 
 # Préparation des données de détections
 ordre <- c(
@@ -75,7 +67,7 @@ id_par_jour <- id_par_jour %>%
 
 # Préparation finale : débit + détections
 id_plot <- id_par_jour %>%
-  left_join(debit_amont, by = "date") %>%
+  left_join(debits_journalier, by = "date") %>%
   mutate(antenne = factor(antenne, levels = names(couleurs_antennes)))
 
 
@@ -95,7 +87,7 @@ for (a in antennes) {
   dmax <- max(df_ant$date)
   
   # débit restreint à la plage
-  df_debit <- debit_amont %>%
+  df_debit <- debits_journalier %>%
     filter(date >= dmin & date <= dmax)
   
   # --- ID détectés
