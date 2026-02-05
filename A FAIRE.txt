@@ -1,0 +1,2 @@
+- Header barre onglet = arrondis
+- automatiser la publication sur Git Hub

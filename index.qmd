@@ -70,6 +70,9 @@ fichier_xlsx <- "C:/Users/r0bin/OneDrive - Profish/Projets Profish/Profish FR/EP
 
 # Lecture du fichier
 suivi_data <- read_excel(fichier_xlsx)
+sites_antennes <- read_delim("sites_antennes.csv", 
+    delim = ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
+    trim_ws = TRUE)
 
 # Récupération de la dernière valeur non NA de la colonne id_dl
 date_dernier_dl <- suivi_data %>%
@@ -80,21 +83,21 @@ date_dernier_dl <- suivi_data %>%
 # Affichage HTML
 cat(paste0(
   "
-<p><strong>Nombre d’antennes : 5</strong></p>
+<p><strong>Nombre d’antennes : ", nrow(sites_antennes), "</strong></p>
 
 <ul id='liste-antennes'>
-  <li><button type='button' data-antenne='Ronce aval' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Ronce aval</button></li>
-  <li><button type='button' data-antenne='Ronce amont' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Ronce amont</button></li>
-  <li><button type='button' data-antenne='Milleron' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Milleron</button></li>
-  <li><button type='button' data-antenne='Dalot' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Dalot</button></li>
-  <li><button type='button' data-antenne='Lancière' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Lancière</button></li>
+  <li><a href='#' style='color:#3D619DFF; text-decoration:none;'>", sites_antennes$antenne[1], "</a></li>
+  <li><a href='#' style='color:#3D619DFF; text-decoration:none;'>", sites_antennes$antenne[2], "</a></li>
+  <li><a href='#' style='color:#3D619DFF; text-decoration:none;'>", sites_antennes$antenne[3], "</a></li>
+  <li><a href='#' style='color:#3D619DFF; text-decoration:none;'>", sites_antennes$antenne[4], "</a></li>
+  <li><a href='#' style='color:#3D619DFF; text-decoration:none;'>", sites_antennes$antenne[5], "</a></li>
 </ul>
 
-  <p><strong>Date du dernier téléchargement</strong></p>
-  <ul>
-    <li>", format(date_dernier_dl, "%d/%m/%Y"), "</li>
-  </ul>
-  "
+<p><strong>Date du dernier téléchargement</strong></p>
+<ul>
+  <li>", format(date_dernier_dl, "%d/%m/%Y"), "</li>
+</ul>
+"
 ))
 ```
 
@@ -137,57 +140,7 @@ leaflet(sites_antennes, options = leafletOptions(worldCopyJump = TRUE)) %>%
     zoomLevelFixed = 3,
     aimingRectOptions = list(color = "#FF4C4C", weight = 8, clickable = FALSE),
     width = 100,
-    height = 100
-  ) %>%
-  htmlwidgets::onRender("
-  function(el, x) {
-
-    var map = this;
-
-    // ===== Fonctions utilitaires =====
-    function resetMarkers() {
-      map.eachLayer(function(layer){
-        if(layer.options && layer.options.layerId){
-          layer.setStyle({color: 'steelblue', radius: 6});
-        }
-      });
-    }
-
-    function highlight(name) {
-      resetMarkers();
-      map.eachLayer(function(layer){
-        if(layer.options && layer.options.layerId === name){
-          layer.setStyle({color: 'tomato', radius: 10});
-          layer.bringToFront();
-          if(layer.getPopup()) { layer.openPopup(); }
-        }
-      });
-    }
-
-    // ===== Attendre que le DOM soit complètement chargé =====
-    document.addEventListener('DOMContentLoaded', function() {
-
-      // clic sur la carte
-      map.eachLayer(function(layer){
-        if(layer.options && layer.options.layerId){
-          layer.on('click', function(){
-            highlight(this.options.layerId);
-          });
-        }
-      });
-
-      // clic sur la liste HTML
-      document.querySelectorAll('#liste-antennes a, #liste-antennes button').forEach(function(el){
-        el.addEventListener('click', function(e){
-          e.preventDefault();
-          highlight(this.dataset.antenne);
-        });
-      });
-
-    }); // fin DOMContentLoaded
-
-  } // fin onRender
-")
+    height = 100) 
 ```
 
 ## Row
