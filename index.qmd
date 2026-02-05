@@ -83,11 +83,11 @@ cat(paste0(
 <p><strong>Nombre d’antennes : 5</strong></p>
 
 <ul id='liste-antennes'>
-  <li><a href='#' data-antenne='Ronce aval' style='text-decoration:none; color:#3D619DFF;'>Ronce aval</a></li>
-  <li><a href='#' data-antenne='Ronce amont' style='text-decoration:none; color:#3D619DFF;'>Ronce amont</a></li>
-  <li><a href='#' data-antenne='Milleron' style='text-decoration:none; color:#3D619DFF;'>Milleron</a></li>
-  <li><a href='#' data-antenne='Dalot' style='text-decoration:none; color:#3D619DFF;'>Dalot</a></li>
-  <li><a href='#' data-antenne='Lancière' style='text-decoration:none; color:#3D619DFF;'>Lancière</a></li>
+  <li><button type='button' data-antenne='Ronce aval' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Ronce aval</button></li>
+  <li><button type='button' data-antenne='Ronce amont' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Ronce amont</button></li>
+  <li><button type='button' data-antenne='Milleron' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Milleron</button></li>
+  <li><button type='button' data-antenne='Dalot' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Dalot</button></li>
+  <li><button type='button' data-antenne='Lancière' style='color:#3D619DFF; background:none; border:none; cursor:pointer;'>Lancière</button></li>
 </ul>
 
   <p><strong>Date du dernier téléchargement</strong></p>
@@ -172,10 +172,9 @@ leaflet(sites_antennes, options = leafletOptions(worldCopyJump = TRUE)) %>%
         }
       });
 
-      // clic sur la liste HTML
-      document.querySelectorAll('#liste-antennes a').forEach(function(link){
-        link.addEventListener('click', function(e){
-          e.preventDefault();
+      // clic sur les boutons HTML
+      document.querySelectorAll('#liste-antennes button').forEach(function(btn){
+        btn.addEventListener('click', function(e){
           highlight(this.dataset.antenne);
         });
       });
