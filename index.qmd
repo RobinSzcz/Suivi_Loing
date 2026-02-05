@@ -140,28 +140,32 @@ leaflet(sites_antennes, options = leafletOptions(worldCopyJump = TRUE)) %>%
     height = 100
   ) %>%
   htmlwidgets::onRender("
-    function(el, x) {
+  function(el, x) {
 
-      var map = this;
+    var map = this;
 
-      function resetMarkers(){
-        map.eachLayer(function(layer){
-          if(layer.options && layer.options.layerId){
-            layer.setStyle({color: 'steelblue', radius: 6});
-          }
-        });
-      }
+    // ===== Fonctions utilitaires =====
+    function resetMarkers() {
+      map.eachLayer(function(layer){
+        if(layer.options && layer.options.layerId){
+          layer.setStyle({color: 'steelblue', radius: 6});
+        }
+      });
+    }
 
-      function highlight(name){
-        resetMarkers();
-        map.eachLayer(function(layer){
-          if(layer.options && layer.options.layerId === name){
-            layer.setStyle({color: 'tomato', radius: 10});
-            layer.bringToFront();
-            layer.openPopup();
-          }
-        });
-      }
+    function highlight(name) {
+      resetMarkers();
+      map.eachLayer(function(layer){
+        if(layer.options && layer.options.layerId === name){
+          layer.setStyle({color: 'tomato', radius: 10});
+          layer.bringToFront();
+          if(layer.getPopup()) { layer.openPopup(); }
+        }
+      });
+    }
+
+    // ===== Attendre que le DOM soit complètement chargé =====
+    document.addEventListener('DOMContentLoaded', function() {
 
       // clic sur la carte
       map.eachLayer(function(layer){
@@ -172,15 +176,18 @@ leaflet(sites_antennes, options = leafletOptions(worldCopyJump = TRUE)) %>%
         }
       });
 
-      // clic sur les boutons HTML
-      document.querySelectorAll('#liste-antennes button').forEach(function(btn){
-        btn.addEventListener('click', function(e){
+      // clic sur la liste HTML
+      document.querySelectorAll('#liste-antennes a, #liste-antennes button').forEach(function(el){
+        el.addEventListener('click', function(e){
+          e.preventDefault();
           highlight(this.dataset.antenne);
         });
       });
 
-    }
-  ")
+    }); // fin DOMContentLoaded
+
+  } // fin onRender
+")
 ```
 
 ## Row
